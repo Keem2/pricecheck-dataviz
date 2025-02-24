@@ -14,7 +14,7 @@ def find_average(df, column='price'):
 # Category dropdown values
 categories = df_clean['category'].drop_duplicates().sort_values().to_list()
 
-st.write("Pricecheck BB Dashboard")
+st.title("Pricecheck BB Dashboard :flag-bb:")
 
 # category select dropdown
 category_option = st.selectbox("Select a category",categories)
@@ -49,11 +49,39 @@ lowest_price = lowest_price_row['price']
 
 # average price
 avg = product_info_df["price"].dropna().mean()
+
+# product info from most recent reference date
+recent_product_info_ = product_info_df[product_info_df['reference_date'] == product_info_df['reference_date'].max()]
+recent_product_info_df = recent_product_info_[['vendor_group_name','price']]
+
+  
+
+with st.container(border=True):
+    st.subheader("Lowest Price Recorded")
+    st.metric(value=lowest_price, label_visibility='collapsed', label="Lowest Price Recorded")
+    st.text(f"Found at {lowest_price_vendor}")
+
+with st.container(border=True):
+    st.subheader("Average Price")
+    st.metric(value=avg, label_visibility='collapsed', label="Average Price")
+
+dates = product_info_df['reference_date'].drop_duplicates().sort_values().to_list()
+
+# lowest price for each date
+df_min_prices = product_info_df.groupby('reference_date')['price'].min().reset_index()
+
+
+price_chart_data = pd.DataFrame(
+    {
+        "Reference Date": df_min_prices['reference_date'].to_list(),
+         "Price": df_min_prices['price'].to_list(),
     
         
-lowest_price_display = st.text(lowest_price)
-lowest_price_vendor_display = st.text(lowest_price_vendor)
-
-
-average_price_display = st.text(avg)
+        
+    }
+)
+st.header("Lowest Price History", divider="gray")
+st.line_chart(price_chart_data, x="Reference Date",y="Price")
+    
+    
 
