@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-df = pd.read_csv('../prices_file.csv')
+df = pd.read_csv('prices_file.csv')
 df_clean = df.dropna(how="all")
 
 # Category dropdown values
